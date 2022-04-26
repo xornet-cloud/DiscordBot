@@ -1,7 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import Discord, { MessageEmbed } from "discord.js";
-import { getStats } from "../api";
-import { parseTime } from "../util";
+import { getStats } from "../src/api";
 
 export const command = {
   data: new SlashCommandBuilder().setName("stats").setDescription("Show backend stats"),

@@ -2,9 +2,10 @@
   "name": "discordbot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "./src/index.ts",
   "scripts": {
-    "dev": "nodemon ./index.ts",
+    "dev": "nodemon ./src/index.ts",
+    "build": "tsc",
     "prettify": "npx prettier --write \"./**/*.ts\" && npx prettier --write \"./**/*.json\"",
     "prod": "ts-node -T ./index.ts"
   },

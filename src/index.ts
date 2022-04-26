@@ -1,14 +1,20 @@
-require("dotenv").config();
+import "dotenv/config";
 import { REST } from "@discordjs/rest";
 import chalk from "chalk";
 import Discord, { Intents, PresenceStatusData } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { Routes } from "discord-api-types/v10";
-import fs from "node:fs";
 import { getStats } from "./api";
+import status from "./commands/status";
+import stats from "./commands/status";
+
+export interface ICommand {
+  data: SlashCommandBuilder;
+  execute: (interaction: Discord.CommandInteraction, client: Discord.Client) => any | Promise<any>;
+}
 
 class Bot extends Discord.Client {
-  public static APPLICATION_ID = "942200099801538600";
+  public static APPLICATION_ID = process.env.APPLICATION_ID!;
   public commandHandler: CommandHandler = new CommandHandler(this);
   private iterator = 0;
   constructor() {
@@ -74,36 +80,19 @@ class Bot extends Discord.Client {
 }
 
 class CommandHandler {
-  public commands: Discord.Collection<string, { data: SlashCommandBuilder; execute: (interaction: Discord.CommandInteraction, client: Discord.Client) => any | Promise<any> }> = new Discord.Collection();
+  public commands: Discord.Collection<string, ICommand> = new Discord.Collection();
 
   constructor(public client: Discord.Client) {
-    this.registerCommands(this.getCommandFiles("./commands"));
+    this.registerCommands([stats, status]);
   }
 
-  public getCommandFiles(directory: string, commands: string[] = []) {
-    const files = fs.readdirSync(directory);
-    for (const file of files) {
-      const path = `${directory}/${file}`;
-      if (file.endsWith(".js")) {
-        console.log(`${chalk.blue("[COMMAND.FOUND]")} Loading ${file}`);
-        commands.push(file);
-      } else if (fs.statSync(path).isDirectory()) {
-        console.log(`${chalk.blue("[COMMAND.FOUND]")} Loading Folder: ${path}`);
-        this.getCommandFiles(path, commands);
-      }
-    }
-
-    return commands;
-  }
-
-  public registerCommands(paths: string[]) {
-    for (let i = 0; i < paths.length; i++) {
-      this.registerCommand(paths[i]);
+  public registerCommands(commands: ICommand[]) {
+    for (let i = 0; i < commands.length; i++) {
+      this.registerCommand(commands[i]);
     }
   }
 
-  public registerCommand(targetPath: string) {
-    const { command } = require(`./commands/${targetPath}`);
+  public registerCommand(command: ICommand) {
     this.commands.set(command.data.name, command);
   }
 

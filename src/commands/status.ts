@@ -1,7 +1,8 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import Discord, { MessageEmbed } from "discord.js";
+import { ICommand } from "..";
 
-export const command = {
+export default {
   data: new SlashCommandBuilder().setName("status").setDescription("Displays Bot Status"),
   execute: async (interaction: Discord.CommandInteraction, client: Discord.Client) =>
     interaction.reply({
@@ -13,4 +14,4 @@ export const command = {
           .addField("Uptime", `<t:${parseInt((client.readyTimestamp! / 1000).toString())}:R>`),
       ],
     }),
-};
+} as ICommand;

@@ -1,9 +1,9 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import Discord, { MessageEmbed } from "discord.js";
+import { ICommand } from "..";
 import { getStats } from "../api";
-import { parseTime } from "../util";
 
-export const command = {
+export default {
   data: new SlashCommandBuilder().setName("stats").setDescription("Show backend stats"),
   execute: async (interaction: Discord.CommandInteraction) =>
     getStats().then((stats) =>
@@ -21,4 +21,4 @@ export const command = {
         ],
       })
     ),
-};
+} as ICommand;
