@@ -29,29 +29,36 @@ class Bot extends Discord.Client {
       console.log(`Bot logged in as ${this.user?.username}#${this.user?.discriminator}`);
       this.commandHandler.submitSlashCommands(Array.from(this.guilds.cache.values()));
       setInterval(() => {
-        getStats().then((stats) => {
-          this.user!.setPresence({
-            activities: [
-              {
-                name: (() => {
-                  switch (this.iterator) {
-                    case 0:
-                      return `Ping: ${stats.ping} ms`;
-                    case 1:
-                      return `Uptime: ${parseTime(stats.uptime)}`;
-                    case 2:
-                      return `CPU: ${stats.processor} %`;
-                    case 3:
-                      return `RAM: ${~~stats.memory.used} MB / ${~~stats.memory.total} MB`;
-                    default:
-                      return "Your mom";
-                  }
-                })(),
-              },
-            ],
-            status: ["online", "idle", "dnd"][~~(Math.random() * 3)] as PresenceStatusData,
+        getStats()
+          .then((stats) => {
+            this.user!.setPresence({
+              activities: [
+                {
+                  name: (() => {
+                    switch (this.iterator) {
+                      case 0:
+                        return stats.ping;
+                      case 1:
+                        return stats.uptime;
+                      case 2:
+                        return stats.cpu;
+                      case 3:
+                        return stats.ram;
+                      default:
+                        return "Your mom";
+                    }
+                  })(),
+                },
+              ],
+              status: (stats.ping_raw <= 100 ? "online" : "idle") as PresenceStatusData,
+            });
+          })
+          .catch(() => {
+            this.user!.setPresence({
+              activities: [{ name: "Backend Down" }],
+              status: "dnd",
+            });
           });
-        });
       }, 5000);
       setInterval(() => {
         this.iterator >= 3 ? (this.iterator = 0) : this.iterator++;
