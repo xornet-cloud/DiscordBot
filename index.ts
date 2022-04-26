@@ -1,12 +1,11 @@
 require("dotenv").config();
 import { REST } from "@discordjs/rest";
-import { parseTime } from "./util";
 import chalk from "chalk";
 import Discord, { Intents, PresenceStatusData } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { Routes } from "discord-api-types/v10";
 import fs from "node:fs";
-import { getPing, getStats } from "./api";
+import { getStats } from "./api";
 
 class Bot extends Discord.Client {
   public static APPLICATION_ID = "942200099801538600";

@@ -1,0 +1,7 @@
+version: "3"
+
+services:
+  xornet-bot:
+    build: .
+    volumes:
+      - ./.env:/.env
